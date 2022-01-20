@@ -9,9 +9,12 @@ cos = function (x){
 a = 5.4/sqrt(2)
 conversion = 0.51 * sqrt(2.1)
 
-function plot_slit(theta,tau,phi){
-  delta = d3.range(-15,15+0.5,0.5)
+function plot_slit(){
+  theta = document.getElementById('theta').value
+  phi = document.getElementById('phi').value
+  tau = document.getElementById('tau').value
 
+  delta = d3.range(-15,15+0.5,0.5)
 
   prange = pi / a
   _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
