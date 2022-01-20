@@ -11,10 +11,16 @@
 
 
   <div>
+    <script type="text/javascript">
+    function update(){
+      plot_slit()
+      plot_spectral_image()
+    }
 
-    <input type="number" id="theta" name="theta" min="-90" max="90" value=0 onchange="plot_slit()">
-    <input type="number" id="tau" name="tau" min="-90" max="90" value=0 onchange="plot_slit()">
-    <input type="number" id="phi" name="phi" min="-180" max="180" value=0 onchange="plot_slit()">
+    </script>
+    <input type="number" id="theta" name="theta" min="-90" max="90" value=0 onchange="update()">
+    <input type="number" id="tau" name="tau" min="-90" max="90" value=0 onchange="update()">
+    <input type="number" id="phi" name="phi" min="-180" max="180" value=0 onchange="update()">
   </div>
   <script src="geo_arpes.js" charset="utf-8"></script>
   </body>
