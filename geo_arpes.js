@@ -40,22 +40,37 @@ ky = []
         .y((p) => y(p[1]))
         .curve(d3.curveBasis);
 
-    FS//.selectAll("path")
-    //.data
-    //.enter()
-    .append("path")
     //FS.append("path")
-      .attr("d", Gen(d3.zip(kx,ky)))
-      .attr("fill", "none")
-      .attr("stroke", "green")
-      .attr("stroke-width", 5);
+    //  .attr("d", Gen(d3.zip(kx,ky)))
+    //  .attr("fill", "none")
+    //  .attr("stroke", "green")
+    //  .attr("stroke-width", 5);
+
+    slit_dots = slit.selectAll('circle')
+    .data(d3.zip(kx,ky),d=>d)
+
+    slit_dots.enter()
+    .append("circle")
+      .attr("cx", d=>x(d[0]))
+      .attr("cy",d=> y(d[1]))
+      .attr('r',2)
+
+    slit_dots
+    .exit()
+    .remove()
 
 
-    FS.append("circle")
-        .attr("cx",x(slit_x))
-        .attr("cy",y(slit_y))
+    slit_center = slit_center_g.selectAll('circle')
+    .data([[slit_x,slit_y]],d=>d)
+
+    slit_center.enter()
+    .append("circle")
+        .attr("cx",d=>x(d[0]))
+        .attr("cy",d=>y(d[1]))
         .attr("r",5)
         .style("fill", "#69b3a2")
+
+    slit_center.exit().remove()
 }
 
   var margin = {top: 10, right: 30, bottom: 30, left: 60}
@@ -95,6 +110,9 @@ ky = []
   .attr("stroke","black")
   .style("stroke-width",2)
   .style("stroke-opacity",0.2)
+
+  slit = FS.append('g')
+  slit_center_g = FS.append('g')
 
 
   var Dispersion_margin = {top: 10, right: 30, bottom: 30, left:  60}
