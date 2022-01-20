@@ -9,13 +9,105 @@ cos = function (x){
 a = 5.4/sqrt(2)
 conversion = 0.51 * sqrt(2.1)
 
+var linspace = function(start, stop, nsteps){
+  delta = (stop-start)/(nsteps-1)
+  return d3.range(start, stop+delta, delta).slice(0, nsteps)
+}
+
+function BSCO_tightBinding_function(Kx,Ky){
+    t = 0.36
+    t1 = -0.28*t
+    t2 = 0.1*t
+    t3 = 0.03*t
+    E = -2*t*(Math.cos(Kx*a)+Math.cos(Ky*a)) - t1*(Math.cos(Kx*a)*Math.cos(Ky*a))-2*t2*(Math.cos(2*Kx*a)+Math.cos(Ky*2*a))-t3*(Math.cos(Kx*2*a)*Math.cos(Ky*a)+Math.cos(2*Ky*a)*Math.cos(Kx*a))
+    return E
+}
+
+function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
+    Kb = 8.617333262145*10**(-5) //eV/K
+    Ed = BSCO_tightBinding_function(kx,ky)
+    wt = linspace(E-2*sigma,E+2*sigma,10)
+    sigma_sqrt_2pi = sigma*sqrt(2*pi)
+    I = 0
+    if(T!=0){
+      FD=1/(Math.exp(E/(Kb*T))+1)
+    }
+    else{
+      if(E<0){
+        FD = 1
+      }else{
+        FD = 0
+      }
+    }
+    if(sigma==0){
+      return Sigmat/(Math.pow((E-Ed),2)+Math.pow(Sigmat,2))*FD
+    }
+
+    for(i=0;i<wt.length;i++){
+      _wt = wt[i]
+      I = I + Sigmat/(Math.pow((_wt-Ed),2)+Math.pow(Sigmat,2))* FD * Math.exp(-1/2*Math.pow((E - _wt),2)/(sigma*sigma))/sigma_sqrt_2pi
+    }
+    return I
+}
+
+function spectral_image(){
+  theta = document.getElementById('theta').value
+  phi = document.getElementById('phi').value
+  tau = document.getElementById('tau').value
+  Erange = 100
+  var E = linspace(Ebot,Etop,Erange)
+  let krange = 50
+  var image = Array(krange*Erange)
+
+  delta = linspace(-15,15,50)
+  _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
+  _kx = delta.map(x => a / pi * conversion * (cos(x)*sin(theta)))
+  kx = []
+  ky = []
+
+  for(i=0; i< _ky.length;i++){
+      ky[i] = _ky[i]*cos(phi) + _kx[i]*sin(phi)
+      kx[i] = _kx[i]*cos(phi) - _ky[i]*sin(phi)
+  }
+
+
+
+  for(j=0;j<kx.length;j++){
+    for(i=0;i<E.length;i++){
+      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],T=90,Sigmat=0.05,sigma=0)
+    }
+  }
+  return [image,kx,ky]
+}
+
+
+function plot_spectral_image(){
+  [data,kx,ky] = spectral_image()
+  image = image_g.selectAll('rect').data(data)
+  krange = 50
+  var E = linspace(Ebot,Etop,Erange)
+  var myColor = d3.scaleSequential().domain([0,Math.max(...data)])
+  .interpolator(d3.interpolatePuRd);
+
+  image.enter()
+  .append("rect")
+    //.attr('x',function(d,i){return Dx(sqrt(Math.pow(kx[i % krange],2)+Math.pow(ky[i % krange],2)))})
+    .attr('x',(d,i)=>Dx(-15+(i%krange)/50*30))
+    .attr('y',function(d,i) {return Dy(E[Math.floor(i / krange)])})
+    .attr('width',16)
+    .attr('height',7)
+    .style("fill",d=>myColor(d))
+
+  image.exit().remove()
+}
+
 function plot_slit(){
   theta = document.getElementById('theta').value
   phi = document.getElementById('phi').value
   tau = document.getElementById('tau').value
 
-  delta = d3.range(-15,15+0.5,0.5)
-
+  //delta = d3.range(-15,15+0.5,0.5)
+  delta = linspace(-15,15,50)
   prange = pi / a
   _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
   _kx = delta.map(x => a / pi * conversion * (cos(x)*sin(theta)))
@@ -136,8 +228,10 @@ ky = []
       .call(d3.axisBottom(Dx));
 
     // Add Y axis
+    Etop = 0.1
+    Ebot = -0.9;
     var Dy = d3.scaleLinear()
-      .domain([-0.9, 0.1])
+      .domain([Ebot, Etop])
       .range([ height, 0]);
     Dispersion.append("g")
       .call(d3.axisLeft(Dy));
@@ -147,6 +241,7 @@ ky = []
           .y((p) => Dy(p[1]))
           .curve(d3.curveBasis);
 
+      image_g = Dispersion.append('g')
 
       Dispersion.append("path")
         .attr("d", Dispersion_line([[-15,0],[15,0]]))
