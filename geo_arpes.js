@@ -19,16 +19,16 @@ function BSCO_tightBinding_function(Kx,Ky){
     t1 = -0.28*t
     t2 = 0.1*t
     t3 = 0.03*t
-    E = -2*t*(Math.cos(Kx*a)+Math.cos(Ky*a)) - t1*(Math.cos(Kx*a)*Math.cos(Ky*a))-2*t2*(Math.cos(2*Kx*a)+Math.cos(Ky*2*a))-t3*(Math.cos(Kx*2*a)*Math.cos(Ky*a)+Math.cos(2*Ky*a)*Math.cos(Kx*a))
-    return E
+    return -2*t*(Math.cos(Kx*a)+Math.cos(Ky*a)) - t1*(Math.cos(Kx*a)*Math.cos(Ky*a))-2*t2*(Math.cos(2*Kx*a)+Math.cos(Ky*2*a))-t3*(Math.cos(Kx*2*a)*Math.cos(Ky*a)+Math.cos(2*Ky*a)*Math.cos(Kx*a))
 }
 
 function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
-    Kb = 8.617333262145*10**(-5) //eV/K
+    Kb = 8.617333262145*Math.pow(10,-5) //eV/K
     Ed = BSCO_tightBinding_function(kx,ky)
     wt = linspace(E-2*sigma,E+2*sigma,10)
     sigma_sqrt_2pi = sigma*sqrt(2*pi)
     I = 0
+
     if(T!=0){
       FD=1/(Math.exp(E/(Kb*T))+1)
     }
@@ -74,7 +74,7 @@ function spectral_image(){
 
   for(j=0;j<kx.length;j++){
     for(i=0;i<E.length;i++){
-      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],T=90,Sigmat=0.05,sigma=0)
+      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,90,sigma=0)
     }
   }
   return [image,kx,ky]
