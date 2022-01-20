@@ -83,7 +83,7 @@ function spectral_image(){
 
 function plot_spectral_image(){
   [data,kx,ky] = spectral_image()
-  image = image_g.selectAll('rect').data(data)
+  image = image_g.selectAll('rect').data(data,d=>d)
   krange = 50
   var E = linspace(Ebot,Etop,Erange)
   var myColor = d3.scaleSequential().domain([0,Math.max(...data)])
