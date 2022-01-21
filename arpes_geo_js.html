@@ -15,12 +15,33 @@
     function update(){
       plot_slit()
       spectral_image()
+      document.getElementById("phi_piezo").value = 77 - document.getElementById("phi").value
+      document.getElementById("tau_piezo").value = 164 - document.getElementById("tau").value
+      document.getElementById("theta_piezo").value = document.getElementById("theta").value
     }
 
     </script>
     <input type="number" id="theta" name="theta" min="-90" max="90" value=0 onchange="update()">
     <input type="number" id="tau" name="tau" min="-90" max="90" value=0 onchange="update()">
     <input type="number" id="phi" name="phi" min="-180" max="180" value=0 onchange="update()">
+
+  </div>
+<script type="text/javascript">
+function update_2(){
+
+  document.getElementById("theta").value = document.getElementById("theta_piezo").value
+  document.getElementById("phi").value = document.getElementById("phi_piezo").value - 77
+  document.getElementById("tau").value = document.getElementById("tau_piezo").value - 164
+  plot_slit()
+  spectral_image()
+}
+
+</script>
+  <div>
+    <input type="number" id="theta_piezo" name="theta_piezo"  min="-90" max="90" value="0" onchange="update_2()">
+    <input type="number" id="tau_piezo" name="tau_piezo" min="-360" max="360" value="164" onchange="update_2()">
+    <input type="number" id="phi_piezo" name="phi_piezo" min="-360" max="360" value="77" onchange="update_2()">
+
   </div>
   <script src="geo_arpes.js" charset="utf-8"></script>
   </body>
