@@ -74,7 +74,7 @@ function spectral_image(){
 
   for(j=0;j<kx.length;j++){
     for(i=0;i<E.length;i++){
-      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,90,sigma=0)
+      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,250,sigma=0)
     }
   }
   return [image,kx,ky]
@@ -256,4 +256,5 @@ function draw_FS(){
 
 }
 
-plot_slit(0,0,0)
+plot_slit()
+plot_spectral_image()
