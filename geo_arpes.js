@@ -224,7 +224,16 @@ function plot_FS(){
     Dispersion.append("g")
       .call(d3.axisLeft(Dy));
 
-      var Dispersion_line = d3.line()
+    var Ek_scale = d3.scaleLinear()
+    .domain([2.2+Ebot,2.2+Etop])
+    .range([height,0])
+
+
+    Dispersion.append("g")
+    .attr("transform", "translate("+ width+",0)")
+    .call(d3.axisRight(Ek_scale));
+
+    var Dispersion_line = d3.line()
           .x((p) => Dx(p[0]))
           .y((p) => Dy(p[1]))
           .curve(d3.curveBasis);
@@ -240,9 +249,36 @@ function plot_FS(){
         .style("stroke-dasharray", ("10,3")) ;
 
 
-function draw_FS(){
+function draw_FS(Ef){
+  kxs = linspace(-1,1,500)
+  kys = linspace(-1,1,500)
+  FS_points = []
+  for(i=0;i<kxs.length;i++){
+    for(j=0;j<kys.length;j++){
+      E = BSCO_tightBinding_function(kxs[i],kys[j])
+      if(Math.abs(E-Ef)<0.01){
+        FS_points.push([kxs[i],kys[j]])
+      }
+    }
+  }
+
+  FS.append("g")
+  .selectAll("circle")
+  .data(FS_points)
+  .enter()
+  .append("circle")
+
+  .attr("cx",d=>x(d[0]))
+  .attr("cy",d=>y(d[1]))
+  .attr("r",1)
+  .style("fill", "none")
+  .attr("stroke","black")
+  .style("stroke-width",2)
+  .style("stroke-opacity",0.2)
+
 
 }
 
 plot_slit()
 spectral_image()
+draw_FS(0)
