@@ -71,7 +71,11 @@ function spectral_image(){
   krange = 50
   var E = linspace(Ebot,Etop,Erange)
   var myColor = d3.scaleSequential().domain([0,Math.max(...image)])
-  .interpolator(d3.interpolatePuRd);
+  //.interpolator(d3.interpolatePuRd);
+  //.interpolator(d3.interpolateCividis);
+  //.interpolator(d3.interpolateInferno);
+  .interpolator(d3.interpolateMagma);
+  //.interpolator(d3.interpolateGreys);
 
   image_pixels.enter()
   .append("rect")
@@ -131,6 +135,7 @@ function plot_slit(){
       .attr("cx", d=>x(d[0]))
       .attr("cy",d=> y(d[1]))
       .attr('r',2)
+      .style("fill","#F68C20")
 
     slit_dots
     .exit()
@@ -145,7 +150,9 @@ function plot_slit(){
         .attr("cx",d=>x(d[0]))
         .attr("cy",d=>y(d[1]))
         .attr("r",5)
-        .style("fill", "#69b3a2")
+        //.style("fill", "#69b3a2")
+        .style("fill", "#07519e")
+
 
     slit_center.exit().remove()
 }
@@ -241,9 +248,9 @@ function plot_slit(){
       Dispersion.append("path")
         .attr("d", Dispersion_line([[-15,0],[15,0]]))
         .attr("fill", "none")
-        .attr("stroke", "black")
+        .attr("stroke", "grey")
         .attr("stroke-width", 2)
-        .attr("stroke-opacity",0.2)
+        //.attr("stroke-opacity",0.2)
         .style("stroke-dasharray", ("10,3")) ;
 
 
