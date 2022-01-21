@@ -52,7 +52,7 @@ function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
 }
 
 function spectral_image(){
-  //T = document.getElementById('Temp')
+  T = document.getElementById('Temp').value
   Erange = 100
   var E = linspace(Ebot,Etop,Erange)
   let krange = 50
@@ -62,7 +62,7 @@ function spectral_image(){
 
   for(j=0;j<kx.length;j++){
     for(i=0;i<E.length;i++){
-      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,200,sigma=0)
+      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,T,sigma=0)
     }
   }
 
