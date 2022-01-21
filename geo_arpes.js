@@ -249,8 +249,8 @@ function plot_slit(){
         .attr("d", Dispersion_line([[-15,0],[15,0]]))
         .attr("fill", "none")
         .attr("stroke", "grey")
-        .attr("stroke-width", 2)
-        //.attr("stroke-opacity",0.2)
+        .attr("stroke-width", 1)
+        .attr("stroke-opacity",0.6)
         .style("stroke-dasharray", ("10,3")) ;
 
 
