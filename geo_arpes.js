@@ -51,24 +51,11 @@ function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
 }
 
 function spectral_image(){
-  theta = document.getElementById('theta').value
-  phi = document.getElementById('phi').value
-  tau = document.getElementById('tau').value
+
   Erange = 100
   var E = linspace(Ebot,Etop,Erange)
   let krange = 50
   var image = Array(krange*Erange)
-
-  delta = linspace(-15,15,50)
-  _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
-  _kx = delta.map(x => a / pi * conversion * (cos(x)*sin(theta)))
-  kx = []
-  ky = []
-
-  for(i=0; i< _ky.length;i++){
-      ky[i] = _ky[i]*cos(phi) + _kx[i]*sin(phi)
-      kx[i] = _kx[i]*cos(phi) - _ky[i]*sin(phi)
-  }
 
 
 
@@ -77,19 +64,15 @@ function spectral_image(){
       image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,250,sigma=0)
     }
   }
-  return [image,kx,ky]
-}
 
 
-function plot_spectral_image(){
-  [data,kx,ky] = spectral_image()
-  image = image_g.selectAll('rect').data(data,d=>d)
+  image_pixels = image_g.selectAll('rect').data(image,d=>d)
   krange = 50
   var E = linspace(Ebot,Etop,Erange)
-  var myColor = d3.scaleSequential().domain([0,Math.max(...data)])
+  var myColor = d3.scaleSequential().domain([0,Math.max(...image)])
   .interpolator(d3.interpolatePuRd);
 
-  image.enter()
+  image_pixels.enter()
   .append("rect")
     //.attr('x',function(d,i){return Dx(sqrt(Math.pow(kx[i % krange],2)+Math.pow(ky[i % krange],2)))})
     .attr('x',(d,i)=>Dx(-15+(i%krange)/50*30))
@@ -98,7 +81,7 @@ function plot_spectral_image(){
     .attr('height',7)
     .style("fill",d=>myColor(d))
 
-  image.exit().remove()
+  image_pixels.exit().remove()
 }
 
 function plot_slit(){
@@ -112,8 +95,6 @@ function plot_slit(){
   _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
   _kx = delta.map(x => a / pi * conversion * (cos(x)*sin(theta)))
 
-kx = []
-ky = []
 
   for(i=0; i< _ky.length;i++){
       ky[i] = _ky[i]*cos(phi) + _kx[i]*sin(phi)
@@ -167,6 +148,13 @@ ky = []
 
     slit_center.exit().remove()
 }
+
+function plot_FS(){
+
+}
+
+  var kx = []
+  var ky = []
 
   var margin = {top: 10, right: 30, bottom: 30, left: 60}
       width = 750 - margin.left - margin.right,
@@ -257,4 +245,4 @@ function draw_FS(){
 }
 
 plot_slit()
-plot_spectral_image()
+spectral_image()
