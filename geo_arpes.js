@@ -7,7 +7,7 @@ cos = function (x){
   return Math.cos(x * pi / 180 )
 }
 a = 5.4/sqrt(2)
-conversion = 0.51 * sqrt(2.1)
+conversion = 0.51 * sqrt(2.1) //  1/A
 
 var linspace = function(start, stop, nsteps){
   delta = (stop-start)/(nsteps-1)
@@ -15,6 +15,7 @@ var linspace = function(start, stop, nsteps){
 }
 
 function BSCO_tightBinding_function(Kx,Ky){
+
     t = 0.36
     t1 = -0.28*t
     t2 = 0.1*t
@@ -24,7 +25,7 @@ function BSCO_tightBinding_function(Kx,Ky){
 
 function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
     Kb = 8.617333262145*Math.pow(10,-5) //eV/K
-    Ed = BSCO_tightBinding_function(kx,ky)
+    Ed = BSCO_tightBinding_function(kx*pi/a,ky*pi/a)
     wt = linspace(E-2*sigma,E+2*sigma,10)
     sigma_sqrt_2pi = sigma*sqrt(2*pi)
     I = 0
@@ -51,7 +52,7 @@ function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
 }
 
 function spectral_image(){
-
+  //T = document.getElementById('Temp')
   Erange = 100
   var E = linspace(Ebot,Etop,Erange)
   let krange = 50
@@ -61,7 +62,7 @@ function spectral_image(){
 
   for(j=0;j<kx.length;j++){
     for(i=0;i<E.length;i++){
-      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,250,sigma=0)
+      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,200,sigma=0)
     }
   }
 
@@ -91,7 +92,7 @@ function plot_slit(){
 
   //delta = d3.range(-15,15+0.5,0.5)
   delta = linspace(-15,15,50)
-  prange = pi / a
+
   _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
   _kx = delta.map(x => a / pi * conversion * (cos(x)*sin(theta)))
 
@@ -149,9 +150,6 @@ function plot_slit(){
     slit_center.exit().remove()
 }
 
-function plot_FS(){
-
-}
 
   var kx = []
   var ky = []
@@ -250,8 +248,8 @@ function plot_FS(){
 
 
 function draw_FS(Ef){
-  kxs = linspace(-1,1,500)
-  kys = linspace(-1,1,500)
+  kxs = linspace(-pi/a,pi/a,500)
+  kys = linspace(-pi/a,pi/a,500)
   FS_points = []
   for(i=0;i<kxs.length;i++){
     for(j=0;j<kys.length;j++){
@@ -268,13 +266,13 @@ function draw_FS(Ef){
   .enter()
   .append("circle")
 
-  .attr("cx",d=>x(d[0]))
-  .attr("cy",d=>y(d[1]))
+  .attr("cx",d=>x(d[0]*a/pi))
+  .attr("cy",d=>y(d[1]*a/pi))
   .attr("r",1)
   .style("fill", "none")
   .attr("stroke","black")
-  .style("stroke-width",2)
-  .style("stroke-opacity",0.2)
+  .style("stroke-width",0.5)
+  .style("stroke-opacity",1)
 
 
 }
