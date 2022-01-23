@@ -90,9 +90,10 @@ function spectral_image(){
 }
 
 function plot_slit(){
-  theta = document.getElementById('theta').value
-  phi = document.getElementById('phi').value
-  tau = document.getElementById('tau').value
+  theta = parseFloat(document.getElementById('theta').value) + parseFloat(document.getElementById('theta_sample').value)
+  phi = parseFloat(document.getElementById('phi').value) + parseFloat(document.getElementById('phi_sample').value)
+  tau = parseFloat(document.getElementById('tau').value) + parseFloat(document.getElementById('tau_sample').value)
+
 
   //delta = d3.range(-15,15+0.5,0.5)
   delta = linspace(-15,15,50)
