@@ -197,9 +197,10 @@ function plot_slit(){
   .attr("cy",y(0))
   .attr("r",x(a/pi*conversion)-x(0))
   .style("fill", "none")
-  .attr("stroke","black")
+  .attr("stroke","#8c6cff")
   .style("stroke-width",2)
-  .style("stroke-opacity",0.2)
+  .style("stroke-opacity",0.6)
+  .style("stroke-dasharray", ("10,3"))
 
   slit = FS.append('g')
   slit_center_g = FS.append('g')
@@ -254,6 +255,14 @@ function plot_slit(){
         .attr("stroke-width", 1)
         .attr("stroke-opacity",0.6)
         .style("stroke-dasharray", ("10,3")) ;
+
+        Dispersion.append("path")
+          .attr("d", Dispersion_line([[0,-0.9],[0,0.0]]))
+          .attr("fill", "none")
+          .attr("stroke", "grey")
+          .attr("stroke-width", 1)
+          .attr("stroke-opacity",0.7)
+          .style("stroke-dasharray", ("10,3")) ;
 
 
 function draw_FS(Ef,opacity){
