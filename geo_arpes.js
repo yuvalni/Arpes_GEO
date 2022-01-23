@@ -53,6 +53,7 @@ function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
 
 function spectral_image(){
   T = document.getElementById('Temp').value
+  Sigma = document.getElementById("sigma").value
   Erange = 100
   var E = linspace(Ebot,Etop,Erange)
   let krange = 50
@@ -62,7 +63,7 @@ function spectral_image(){
 
   for(j=0;j<kx.length;j++){
     for(i=0;i<E.length;i++){
-      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],0.05,T,sigma=0)
+      image[j+i*krange] = Spectral_function(kx[j],ky[j],E[i],Sigma,T,0)
     }
   }
 
@@ -231,7 +232,7 @@ function plot_slit(){
       .call(d3.axisLeft(Dy));
 
     var Ek_scale = d3.scaleLinear()
-    .domain([2.2+Ebot,2.2+Etop])
+    .domain([2.1+Ebot,2.1+Etop])
     .range([height,0])
 
 
@@ -255,7 +256,7 @@ function plot_slit(){
         .style("stroke-dasharray", ("10,3")) ;
 
 
-function draw_FS(Ef){
+function draw_FS(Ef,opacity){
   kxs = linspace(-pi/a,pi/a,500)
   kys = linspace(-pi/a,pi/a,500)
   FS_points = []
@@ -280,11 +281,14 @@ function draw_FS(Ef){
   .style("fill", "none")
   .attr("stroke","black")
   .style("stroke-width",0.5)
-  .style("stroke-opacity",1)
+  .style("stroke-opacity",opacity)
 
 
 }
 
 plot_slit()
 spectral_image()
-draw_FS(0)
+draw_FS(0,1)
+draw_FS(-0.1,0.1)
+draw_FS(-0.2,0.05)
+draw_FS(-0.3,0.03)
