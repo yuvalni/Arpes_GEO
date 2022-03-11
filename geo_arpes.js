@@ -8,6 +8,7 @@ cos = function (x){
 }
 a = 5.4/sqrt(2)
 conversion = 0.51 * sqrt(2.1) //  1/A
+Ef = 2.1
 
 var linspace = function(start, stop, nsteps){
   delta = (stop-start)/(nsteps-1)
@@ -51,6 +52,7 @@ function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
     return I
 }
 
+
 function spectral_image(){
   T = document.getElementById('Temp').value
   Sigma = document.getElementById("sigma").value
@@ -77,7 +79,8 @@ function spectral_image(){
   //.interpolator(d3.interpolateInferno);
   .interpolator(d3.interpolateMagma);
   //.interpolator(d3.interpolateGreys);
-
+  x_text = document.getElementById('mouse_x');
+  y_text = document.getElementById('mouse_y');
   image_pixels.enter()
   .append("rect")
     //.attr('x',function(d,i){return Dx(sqrt(Math.pow(kx[i % krange],2)+Math.pow(ky[i % krange],2)))})
@@ -86,6 +89,10 @@ function spectral_image(){
     .attr('width',16)
     .attr('height',7)
     .style("fill",d=>myColor(d))
+    .on('mouseover',function(d,i){
+      x_text.value = (Dx.invert(d.offsetX)-3.0).toFixed(2);
+      y_text.value = (Dy.invert(d.offsetY)+Ef).toFixed(2);
+    })
 
   image_pixels.exit().remove()
 }
@@ -202,6 +209,8 @@ function plot_slit(){
   .style("stroke-opacity",0.6)
   .style("stroke-dasharray", ("10,3"))
 
+
+
   slit = FS.append('g')
   slit_center_g = FS.append('g')
 
@@ -233,7 +242,7 @@ function plot_slit(){
       .call(d3.axisLeft(Dy));
 
     var Ek_scale = d3.scaleLinear()
-    .domain([2.1+Ebot,2.1+Etop])
+    .domain([Ef+Ebot,Ef+Etop])
     .range([height,0])
 
 
@@ -263,7 +272,6 @@ function plot_slit(){
           .attr("stroke-width", 1)
           .attr("stroke-opacity",0.7)
           .style("stroke-dasharray", ("10,3")) ;
-
 
 function draw_FS(Ef,opacity){
   kxs = linspace(-pi/a,pi/a,500)

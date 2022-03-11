@@ -7,7 +7,8 @@
     <title></title>
   </head>
   <body>
-    <div id="arpes"></div>
+    <div id="arpes">
+    </div>
 
 
   <div>
@@ -47,6 +48,7 @@ function update_2(){
   Temperature: <input type="number" id="Temp" name="Temp" min="0" max="400" value="90" onchange="update()">
 
   </div>
+
   <div>
     <div>
     Sample coordinates
@@ -61,6 +63,24 @@ function update_2(){
   Life time: <input type="number" id="sigma" name="Sigma" min="0" max="1.0" value="0.05" onchange="update()">
 
   </div>
+
+  <div id="mouse_coor">
+    <input type="text" id="mouse_x" disabled>
+    <input type="text" id="mouse_y" disabled>
+  </div>
+
+  <div id="Dispersion_range">
+    <label for="Ef">Ef</label>
+    <input id="Ef"  name="Ef" type="number" onchange="change_Ef(this.value)">
+  </div>
+
+
+<script type="text/javascript">
+      //function change_Ef(val){
+        //Ef = float(val);
+      //}
+</script>
+
   <script src="geo_arpes.js" charset="utf-8"></script>
   </body>
 </html>
