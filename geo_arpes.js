@@ -7,8 +7,11 @@ cos = function (x){
   return Math.cos(x * pi / 180 )
 }
 a = 5.4/sqrt(2)
-conversion = 0.51 * sqrt(2.1) //  1/A
-Ef = 2.1
+
+Ef = 2.01
+Etop = 0.1
+Ebot = -0.9;
+conversion = 0.51 * sqrt(Ef) //  1/A
 
 var linspace = function(start, stop, nsteps){
   delta = (stop-start)/(nsteps-1)
@@ -57,7 +60,7 @@ function spectral_image(){
   T = document.getElementById('Temp').value
   Sigma = document.getElementById("sigma").value
   Erange = 100
-  var E = linspace(Ebot,Etop,Erange)
+  E = linspace(Ebot,Etop,Erange)
   let krange = 50
   var image = Array(krange*Erange)
 
@@ -72,7 +75,7 @@ function spectral_image(){
 
   image_pixels = image_g.selectAll('rect').data(image,d=>d)
   krange = 50
-  var E = linspace(Ebot,Etop,Erange)
+  //var E = linspace(Ebot,Etop,Erange)
   var myColor = d3.scaleSequential().domain([0,Math.max(...image)])
   //.interpolator(d3.interpolatePuRd);
   //.interpolator(d3.interpolateCividis);
@@ -199,7 +202,7 @@ function plot_slit(){
   FS.append("g")
     .call(d3.axisLeft(y));
 
-  FS.append("circle")
+  photon_range = FS.append("circle")
   .attr("cx",x(0))
   .attr("cy",y(0))
   .attr("r",x(a/pi*conversion)-x(0))
@@ -232,13 +235,14 @@ function plot_slit(){
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(Dx));
 
+
     // Add Y axis
-    Etop = 0.1
-    Ebot = -0.9;
+
     var Dy = d3.scaleLinear()
       .domain([Ebot, Etop])
       .range([ height, 0]);
-    Dispersion.append("g")
+
+    E_bind_axis = Dispersion.append("g")
       .call(d3.axisLeft(Dy));
 
     var Ek_scale = d3.scaleLinear()
@@ -246,7 +250,7 @@ function plot_slit(){
     .range([height,0])
 
 
-    Dispersion.append("g")
+    Ek_axis = Dispersion.append("g")
     .attr("transform", "translate("+ width+",0)")
     .call(d3.axisRight(Ek_scale));
 
@@ -257,7 +261,8 @@ function plot_slit(){
 
       image_g = Dispersion.append('g')
 
-      Dispersion.append("path")
+      Ef_line = Dispersion.append("path")
+        .attr("id", "Ef")
         .attr("d", Dispersion_line([[-15,0],[15,0]]))
         .attr("fill", "none")
         .attr("stroke", "grey")
@@ -265,8 +270,9 @@ function plot_slit(){
         .attr("stroke-opacity",0.6)
         .style("stroke-dasharray", ("10,3")) ;
 
-        Dispersion.append("path")
-          .attr("d", Dispersion_line([[0,-0.9],[0,0.0]]))
+        k0_line = Dispersion.append("path")
+          .attr("id", "k0")
+          .attr("d", Dispersion_line([[0,Ebot],[0,0.0]]))
           .attr("fill", "none")
           .attr("stroke", "grey")
           .attr("stroke-width", 1)
@@ -286,6 +292,9 @@ function draw_FS(Ef,opacity){
     }
   }
 
+
+
+
   FS.append("g")
   .selectAll("circle")
   .data(FS_points)
@@ -302,7 +311,33 @@ function draw_FS(Ef,opacity){
 
 
 }
+function update_Ek_scale(){
 
+  Ek_scale.domain([Ef+Ebot,Ef+Etop])
+  Ek_axis.transition().duration(1000).call(d3.axisRight(Ek_scale));
+  conversion = 0.51 * sqrt(Ef) //  1/A
+  photon_range.attr("r",x(a/pi*conversion)-x(0))
+
+
+
+}
+
+function update_dispersion_range(){
+
+  Ek_scale.domain([Ef+Ebot,Ef+Etop]);
+  Dy.domain([Ebot, Etop]);
+
+  Ek_axis.transition().duration(1000).call(d3.axisRight(Ek_scale));
+  E_bind_axis.transition().duration(1000).call(d3.axisLeft(Dy));
+
+  image_g.selectAll('rect').remove()
+  setTimeout(() => {  spectral_image(); }, 1000);
+
+  k0_line.transition().duration(1000).attr("d", Dispersion_line([[0,Ebot],[0,0.0]]))
+  Ef_line.transition().duration(1000).attr("d", Dispersion_line([[-15,0],[15,0]]))
+
+
+}
 plot_slit()
 spectral_image()
 draw_FS(0,1)

@@ -71,14 +71,30 @@ function update_2(){
 
   <div id="Dispersion_range">
     <label for="Ef">Ef</label>
-    <input id="Ef"  name="Ef" type="number" onchange="change_Ef(this.value)">
+    <input id="Ef"  name="Ef" type="number" onchange="change_Ef(this.value)" value=2.01>
+
+
+    <label for="Etop">Etop</label>
+    <input id="Etop"  name="Etop" type="number" onchange="update_bound()" value=0.1>
+    <label for="Ebot">Ebot</label>
+    <input id="Ebot"  name="Ebot" type="number" onchange="update_bound()" value=-0.9>
+
   </div>
 
 
 <script type="text/javascript">
-      //function change_Ef(val){
-        //Ef = float(val);
-      //}
+      function change_Ef(val){
+        Ef = parseFloat(val);
+        update_Ek_scale()
+      }
+
+      function update_bound(){
+        Etop = parseFloat(document.getElementById('Etop').value)
+        Ebot = parseFloat(document.getElementById('Ebot').value)
+
+        update_dispersion_range()
+
+      }
 </script>
 
   <script src="geo_arpes.js" charset="utf-8"></script>
