@@ -8,10 +8,14 @@ cos = function (x){
 }
 a = 5.4/sqrt(2)
 
-Ef = 2.01
+Ef = 2.15
 Etop = 0.1
 Ebot = -0.9;
 conversion = 0.51 * sqrt(Ef) //  1/A
+
+function dwave_gap(Kx, Ky, delta0=0.05) {
+  return delta0 * (Math.cos(Kx * a) - Math.cos(Ky * a)) / 2;
+}
 
 var linspace = function(start, stop, nsteps){
   delta = (stop-start)/(nsteps-1)
@@ -24,10 +28,11 @@ function BSCO_tightBinding_function(Kx,Ky){
     t1 = -0.28*t
     t2 = 0.1*t
     t3 = 0.03*t
-    return -2*t*(Math.cos(Kx*a)+Math.cos(Ky*a)) - t1*(Math.cos(Kx*a)*Math.cos(Ky*a))-2*t2*(Math.cos(2*Kx*a)+Math.cos(Ky*2*a))-t3*(Math.cos(Kx*2*a)*Math.cos(Ky*a)+Math.cos(2*Ky*a)*Math.cos(Kx*a))
+    mu = -0.35
+    return -2*t*(Math.cos(Kx*a)+Math.cos(Ky*a)) - t1*(Math.cos(Kx*a)*Math.cos(Ky*a))-2*t2*(Math.cos(2*Kx*a)+Math.cos(Ky*2*a))-t3*(Math.cos(Kx*2*a)*Math.cos(Ky*a)+Math.cos(2*Ky*a)*Math.cos(Kx*a))-mu
 }
 
-function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1){
+function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1,delta0 = 0.05){
     Kb = 8.617333262145*Math.pow(10,-5) //eV/K
     Ed = BSCO_tightBinding_function(kx*pi/a,ky*pi/a)
     wt = linspace(E-2*sigma,E+2*sigma,10)
@@ -309,6 +314,13 @@ function draw_FS(Ef,opacity){
   .style("stroke-width",0.5)
   .style("stroke-opacity",opacity)
 
+  FS.append('circle')
+  .attr('cx', x(-0.31819805153))  // 0.383 is already in the scaled domain [-1, 1]
+  .attr('cy', y(0.31819805153))
+  .attr('r', 5)
+  .style('fill', 'red')
+  .style('stroke', 'black')
+  .style('stroke-width', 1);
 
 }
 function update_Ek_scale(){
