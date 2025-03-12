@@ -28,13 +28,14 @@ function BSCO_tightBinding_function(Kx,Ky){
     t1 = -0.28*t
     t2 = 0.1*t
     t3 = 0.03*t
-    mu = -0.35
+    mu = 0
     return -2*t*(Math.cos(Kx*a)+Math.cos(Ky*a)) - t1*(Math.cos(Kx*a)*Math.cos(Ky*a))-2*t2*(Math.cos(2*Kx*a)+Math.cos(Ky*2*a))-t3*(Math.cos(Kx*2*a)*Math.cos(Ky*a)+Math.cos(2*Ky*a)*Math.cos(Kx*a))-mu
 }
 
 function Spectral_function(kx,ky,E,Sigmat=5,T=90,sigma=0.1,delta0 = 0.05){
     Kb = 8.617333262145*Math.pow(10,-5) //eV/K
-    Ed = BSCO_tightBinding_function(kx*pi/a,ky*pi/a)
+    //Ed = BSCO_tightBinding_function(kx*pi/a,ky*pi/a)
+    Ed = BSCO_tightBinding_function(kx,ky)
     wt = linspace(E-2*sigma,E+2*sigma,10)
     sigma_sqrt_2pi = sigma*sqrt(2*pi)
     I = 0
@@ -114,8 +115,8 @@ function plot_slit(){
   //delta = d3.range(-15,15+0.5,0.5)
   delta = linspace(-15,15,50)
 
-  _ky = delta.map(x => a / pi * conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
-  _kx = delta.map(x => a / pi * conversion * (cos(x)*sin(theta)))
+  _ky = delta.map(x => conversion * (sin(x)*cos(tau)+cos(x)*sin(tau)*cos(theta)))
+  _kx = delta.map(x => conversion * (cos(x)*sin(theta)))
 
 
   for(i=0; i< _ky.length;i++){
@@ -124,8 +125,8 @@ function plot_slit(){
   }
 
 
-  _slit_y = a/pi * conversion * sin(tau) * cos(theta)
-  _slit_x = a/pi *conversion * sin(theta)
+  _slit_y = 1 * conversion * sin(tau) * cos(theta)
+  _slit_x = 1 *conversion * sin(theta)
 
   slit_y = _slit_y*cos(phi) + _slit_x*sin(phi)
   slit_x = _slit_x*cos(phi) - _slit_y*sin(phi)
@@ -193,7 +194,7 @@ function plot_slit(){
   // Add X axis
   var x = d3.scaleLinear()
     //.domain([-pi, pi])
-    .domain([-1,1])
+    .domain([-0.8107450617,0.8107450617])
     .range([ 0, width ]);
   FS.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -202,7 +203,7 @@ function plot_slit(){
   // Add Y axis
   var y = d3.scaleLinear()
     //.domain([-pi, pi])
-    .domain([-1,1])
+    .domain([-0.8107450617,0.8107450617])
     .range([ height, 0]);
   FS.append("g")
     .call(d3.axisLeft(y));
@@ -210,7 +211,7 @@ function plot_slit(){
   photon_range = FS.append("circle")
   .attr("cx",x(0))
   .attr("cy",y(0))
-  .attr("r",x(a/pi*conversion)-x(0))
+  .attr("r",x(1*conversion)-x(0))
   .style("fill", "none")
   .attr("stroke","#8c6cff")
   .style("stroke-width",2)
@@ -285,8 +286,8 @@ function plot_slit(){
           .style("stroke-dasharray", ("10,3")) ;
 
 function draw_FS(Ef,opacity){
-  kxs = linspace(-pi/a,pi/a,500)
-  kys = linspace(-pi/a,pi/a,500)
+  kxs = linspace(-0.8107450617,0.8107450617,500)
+  kys = linspace(-0.8107450617,0.8107450617,500)
   FS_points = []
   for(i=0;i<kxs.length;i++){
     for(j=0;j<kys.length;j++){
@@ -306,8 +307,8 @@ function draw_FS(Ef,opacity){
   .enter()
   .append("circle")
 
-  .attr("cx",d=>x(d[0]*a/pi))
-  .attr("cy",d=>y(d[1]*a/pi))
+  .attr("cx",d=>x(d[0]*1))
+  .attr("cy",d=>y(d[1]*1))
   .attr("r",1)
   .style("fill", "none")
   .attr("stroke","black")
@@ -315,8 +316,8 @@ function draw_FS(Ef,opacity){
   .style("stroke-opacity",opacity)
 
   FS.append('circle')
-  .attr('cx', x(-0.31819805153))  // 0.383 is already in the scaled domain [-1, 1]
-  .attr('cy', y(0.31819805153))
+  .attr('cx', x(-0.3153696244))  
+  .attr('cy', y(0.3153696244))
   .attr('r', 5)
   .style('fill', 'red')
   .style('stroke', 'black')
@@ -328,7 +329,7 @@ function update_Ek_scale(){
   Ek_scale.domain([Ef+Ebot,Ef+Etop])
   Ek_axis.transition().duration(1000).call(d3.axisRight(Ek_scale));
   conversion = 0.51 * sqrt(Ef) //  1/A
-  photon_range.attr("r",x(a/pi*conversion)-x(0))
+  photon_range.attr("r",x(1*conversion)-x(0))
 
 
 
@@ -352,7 +353,7 @@ function update_dispersion_range(){
 }
 plot_slit()
 spectral_image()
-draw_FS(0,1)
+draw_FS(0.0,1)
 draw_FS(-0.1,0.1)
 draw_FS(-0.2,0.05)
 draw_FS(-0.3,0.03)
